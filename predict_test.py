@@ -103,7 +103,7 @@ def main():
     print("there are {} targets to predict".format(len(target_set)))
     error = []
     number = []
-    radius = 20
+    radius = 10
     not_success_number = []
     for i in range(len(target_set)):
         printline()
