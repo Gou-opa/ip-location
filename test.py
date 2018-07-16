@@ -48,9 +48,9 @@ def estimate_error(target,landmarks,radius):
     for i in range(len(landmarks)):
         if i%100==0:
             print(" the {}th in {} landmarks ".format(i + 1, len(landmarks)))
-        if distance[i]>2: continue
+        if distance[i]>3: continue
         for j in range(i+1,len(landmarks)):
-            if distance[j]>2: continue
+            if distance[j]>3: continue
             else:
                 point = dc.solve(landmarks[i]["location"]["longitude"], landmarks[i]["location"]["latitude"],
                                      distance[i] * radius, landmarks[j]["location"]["longitude"],
