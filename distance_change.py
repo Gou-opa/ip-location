@@ -53,6 +53,8 @@ def solve(lon1,lat1,r1,lon2,lat2,r2):
 	x1=get_coordinate(lat1,lon1)
 	x2=get_coordinate(lat2,lon2)
 	q=getq(x1,x2)
+	if q==1:
+		return [[0,0],[0,0]]
 	a=geta(r1,r2,q)
 	b=getb(r1,r2,q)
 	n=getn(x1,x2)
