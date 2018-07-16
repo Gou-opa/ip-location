@@ -46,6 +46,7 @@ def estimate_error(target,landmarks,radius):
         landmark=landmarks[i]
         distance.append(router_distance(target, landmark))
     for i in range(len(landmarks)):
+        print(" the {}th in {} landmarks ".format(i+1, len(landmarks)))
         for j in range(i+1,len(landmarks)):
             try:
                 point = dc.solve(landmarks[i]["location"]["longitude"], landmarks[i]["location"]["latitude"],
