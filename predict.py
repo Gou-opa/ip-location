@@ -99,7 +99,7 @@ def main():
         printline()
         print(i+1)
         landmark_test = []
-        for j in range(600):
+        for i in range(len(target_set)):
             random_number = random.randint(1,len(landmark_set))
             landmark_test.append(landmark_set[j])
         tmp=estimate_error(target_set[i],landmark_test,radius)
