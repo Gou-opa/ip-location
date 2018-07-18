@@ -4,6 +4,11 @@ import numpy as np
 import distance_change as dc
 import random
 
+
+def printline():
+    print("*"*100)
+
+
 def haversine(lon1, lat1, lon2, lat2):             #calculate the distance between two points
     lon1, lat1, lon2, lat2 = map(radians, [lon1, lat1, lon2, lat2])
     dlon = lon2 - lon1
@@ -38,15 +43,20 @@ def estimate_error(target,landmarks,radius):
     intersection_point=[]                  #get intersection point of different circles
     for i in range(len(landmarks)):
         landmark=landmarks[i]
-        distance.append(router_distance(target,landmark))
+        distance.append(router_distance(target, landmark))
     for i in range(len(landmarks)):
+        if i%100==0:
+            print("the {}th in {} landmarks".format(i+1, len(landmarks)))
         for j in range(i+1,len(landmarks)):
-            point=dc.solve(landmarks[i]["location"]["longitude"],landmarks[i]["location"]["latitude"],distance[i]*radius,landmarks[j]["location"]["longitude"],landmarks[j]["location"]["latitude"],distance[j]*radius)
+            point = dc.solve(landmarks[i]["location"]["longitude"], landmarks[i]["location"]["latitude"],
+                                 distance[i] * radius, landmarks[j]["location"]["longitude"],
+                                 landmarks[j]["location"]["latitude"], distance[j] * radius)
             for j in point:
-                intersection_point.append(j)
+                    intersection_point.append(j)
     ###filter intersection points
     flag=np.ones(len(intersection_point))
     for i in range(len(intersection_point)):
+        if i%1000==0: print("checking {} point in {} points".format(i+1, len(intersection_point)))
         number=0.
         for j in range(len(landmarks)):
             if check(intersection_point[i][0],intersection_point[i][1],landmarks[j]["location"]["longitude"],landmarks[j]["location"]["latitude"],radius*distance[j]):
@@ -61,6 +71,7 @@ def estimate_error(target,landmarks,radius):
     lat=0.
     num=0.
     for i in range(len(intersection_point)):
+        if i%1000==0: print("calculating {} point in {} points".format(i+1, len(intersection_point)))
         if flag[i]:
             lon+=intersection_point[i][0]
             lat+=intersection_point[i][1]
@@ -76,32 +87,30 @@ def main():
     f1 = open("11000001ipscout_marker_landmarks.txt", 'r')
     f2 = open("11000001ipscout_marker_targets.txt", 'r')
     f3 = open("11000001ipscout_marker_test_error.txt", 'w')
+    error = []
     for line in f1:
         landmark_set.append(eval(line))
     for line in f2:
         target_set.append(eval(line))
     print("there are {} landmarks".format(len(landmark_set)))
     print("there are {} targets to predict".format(len(target_set)))
-    error = []
-    radius = 20
-    not_success_number = 0
-    for i in range(len(target_set)):
+    radius = 10
+    for i in range(10):
+        printline()
         print(i+1)
-        try:
-            landmark_test = []
-            for j in range(10):
-                n = random.randint(1,len(landmark_set))
-                landmark_test.append(landmark_set[n])
-            tmp=estimate_error(target_set[i],landmark_test,radius)
-            error.append(tmp)
-            print("success")
-        except:
-            not_success_number+=1
+        landmark_test = []
+        for j in range(600):
+            random_number = random.randint(1,len(landmark_set))
+            landmark_test.append(landmark_set[j])
+        tmp=estimate_error(target_set[i],landmark_test,radius)
+        print("error is {} km".format(tmp))
+        error.append(tmp)
+        print("success")
     f3.write(str(error))
-    for i in error:
-        print("the error is {}".format(error[i]))
-        f3.write(error[i])
-        print("not success number is".format(not_success_number))
+    f1.close()
+    f2.close()
+    f3.close()
+    print(error)
 
 
 main()
